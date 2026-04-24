@@ -88,8 +88,8 @@ def calcular_mrr_em_risco() -> dict:
 
     return {
         "overdue_customers_count": len(overdue_customers),
-        "mrr_at_risk": round(total_mrr_at_risk, 2),
-        "total_open_invoice_amount": round(total_open_amount, 2)
+        "mrr_at_risk": total_mrr_at_risk,
+        "total_open_invoice_amount": total_open_amount
     }
 
 
@@ -125,7 +125,7 @@ def priorizar_cobrancas() -> list[dict]:
             "days_overdue": customer["days_overdue"],
             "open_invoice_amount": customer["open_invoice_amount"],
             "contact_email": customer["contact_email"],
-            "priority_score": round(score, 2)
+            "priority_score": score
         })
 
     return sorted(
@@ -212,7 +212,7 @@ def criar_tarefa_cobranca_mock(customer_id: str) -> dict:
         "customer_id": customer["id"],
         "customer_name": customer["name"],
         "contact_email": customer["contact_email"],
-        "open_invoice_amount": round(customer["open_invoice_amount"], 2),
+        "open_invoice_amount": customer["open_invoice_amount"],
         "days_overdue": customer["days_overdue"],
         "plan": customer["plan"],
         "status": "To Do"

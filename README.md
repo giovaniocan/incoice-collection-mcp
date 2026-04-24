@@ -1,77 +1,108 @@
 # Invoice Collection MCP
 
-Simple MCP server for a fake SaaS invoice collection workflow.
+Servidor MCP simples para simular um fluxo de cobrança de clientes inadimplentes em um SaaS.
 
-It helps an AI assistant answer questions like:
+O projeto expõe ferramentas que ajudam um assistente de IA a responder perguntas como:
 
-- Which customers are overdue?
-- How much revenue is at risk?
-- Who should be contacted first?
-- What collection message should be sent?
+- Quais clientes estão inadimplentes?
+- Quanto de MRR está em risco?
+- Quem deve ser cobrado primeiro?
+- Qual mensagem de cobrança enviar?
+- Quais tarefas de follow-up precisam ser criadas?
 
-## What It Does
+## O que este projeto faz
 
-This project reads mock customer data from `customers.json` and exposes it as MCP tools.
+O servidor lê dados mockados de clientes em `customers.json` e disponibiliza tools MCP para consulta e operação de cobrança.
 
-Current tools:
+Tools disponíveis hoje:
 
 - `list_customers()`
 - `listar_faturas_vencidas()`
 - `calcular_mrr_em_risco()`
 - `priorizar_cobrancas()`
 - `gerar_mensagem_cobranca(customer_id)`
+- `criar_tarefa_cobranca_mock(customer_id)`
+- `listar_tarefas_cobranca()`
 
-## Why It Exists
+## Fluxo demonstrado
 
-This is a learning project to practice building MCP servers with a more realistic business case.
+Este projeto cobre um fluxo simples, mas útil para estudos:
 
-Instead of generic demo tools, it simulates a simple finance workflow for a SaaS company.
+1. identificar clientes com faturas vencidas
+2. calcular impacto financeiro no MRR
+3. priorizar a régua de cobrança
+4. gerar mensagens padronizadas
+5. criar tarefas para acompanhamento do time financeiro
 
-## Project Files
+## Screenshots
+
+### Consulta de inadimplentes, MRR em risco e priorização
+
+![Consulta de clientes inadimplentes](question-overdueclients.png)
+
+### Criação de tarefas de cobrança
+
+![Criação de tarefas de cobrança](question-createdTaks.png)
+
+### Arquivo de tarefas gerado
+
+![Arquivo tasks.json com tarefas criadas](tasksfile.png)
+
+## Estrutura do projeto
 
 ```text
 invoice-collection-mcp/
 ├── customers.json
+├── tasks.json
 ├── server.py
 ├── test_local.py
+├── question-overdueclients.png
+├── question-createdTaks.png
+├── tasksfile.png
 └── README.md
 ```
 
-## Run Locally
+## Como rodar localmente
 
-Create a virtual environment:
+Crie e ative um ambiente virtual:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 ```
 
-Install dependencies:
+Instale as dependências:
 
 ```bash
-pip install mcp
+pip install -r requirements.txt
 ```
 
-Run the MCP Inspector:
+Suba o servidor no MCP Inspector:
 
 ```bash
 mcp dev server.py
 ```
 
-## Local Test
+## Teste local
+
+Para validar as funções diretamente em Python:
 
 ```bash
 python test_local.py
 ```
 
-## Example Use Case
+## Exemplo de uso
 
-A founder could ask:
+Exemplos de perguntas que um host MCP pode fazer:
 
-> Which customers are overdue and how much MRR is at risk?
+> Use o MCP invoice_collection para listar clientes inadimplentes, calcular MRR em risco e priorizar cobranças.
 
-An MCP host can then call the server tools and return the answer using your business data.
+> Crie agora para mim as tasks para eu lembrar de cobrar os inadimplentes.
 
-## Next Step
+> Gere as mensagens padronizadas para os clientes em atraso.
 
-The next improvement is turning this into a more realistic product flow by adding task creation for the finance team and connecting the server to a real MCP host like Cursor, Claude Desktop, or VS Code.
+## Por que este projeto existe
+
+Este repositório foi criado para praticar a construção de servidores MCP com um caso de uso mais próximo de uma operação real.
+
+Em vez de tools genéricas, ele simula um cenário de cobrança com dados de clientes, priorização por risco e apoio operacional para o time financeiro.
