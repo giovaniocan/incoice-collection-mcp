@@ -1,10 +1,12 @@
 from mcp.server.fastmcp import FastMCP
 from pathlib import Path
 import json
+from decimal import Decimal
 
 mcp = FastMCP("invoice-collection-mcp")
 
 CUSTOMER_DATA_PATH = Path("customers.json")
+TASKS_FILE = Path("tasks.json")
 
 def listar_clientes() -> list[dict]:
     """Load customer data from the JSON file.`"""
@@ -15,6 +17,29 @@ def listar_clientes() -> list[dict]:
     with open(CUSTOMER_DATA_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
+
+def load_tasks() -> list[dict]:
+    if not TASKS_FILE.exists():
+        return []
+    
+    with open(TASKS_FILE, "r", encoding="utf-8") as file:
+        raw_content = file.read().strip()
+
+    if not raw_content:
+        return []
+
+    try:
+        tasks = json.loads(raw_content)
+    except json.JSONDecodeError:
+        return []
+
+    return tasks if isinstance(tasks, list) else []
+
+def save_tasks(tasks: list[dict]) -> None:
+    with open(TASKS_FILE, "w", encoding="utf-8") as file:
+        json.dump(tasks, file, ensure_ascii=False, indent=2)
+
+#-------------------
 
 @mcp.tool()
 def list_customers() -> list[dict]:
@@ -100,7 +125,7 @@ def priorizar_cobrancas() -> list[dict]:
             "days_overdue": customer["days_overdue"],
             "open_invoice_amount": customer["open_invoice_amount"],
             "contact_email": customer["contact_email"],
-            "priority_score": score
+            "priority_score": round(score, 2)
         })
 
     return sorted(
@@ -154,6 +179,62 @@ def gerar_mensagem_cobranca(customer_id: str) -> dict:
         "message": email_message
     }
 
+@mcp.tool()
+def criar_tarefa_cobranca_mock(customer_id: str) -> dict:
+    """
+    Mock de criação de tarefa de cobrança.
+    Use para simular a criação de uma tarefa de cobrança para um cliente específico.
+    """
+    customers = list_customers()
+
+    customer = next(
+        (item for item in customers if item["id"] == customer_id),
+        None
+    )
+
+    if customer is None:
+        return {
+            "error": True,
+            "message": f"Cliente {customer_id} não encontrado."
+        }
+
+    if customer["invoice_status"] != "overdue":
+        return {
+            "error": True,
+            "message": f"Cliente {customer['name']} não possui fatura vencida."
+        }
+
+    tasks = load_tasks()
+
+    new_task = {
+        "task_id": len(tasks)+ 1,
+        "title": f"Cobrar cliente {customer['name']}",
+        "customer_id": customer["id"],
+        "customer_name": customer["name"],
+        "contact_email": customer["contact_email"],
+        "open_invoice_amount": round(customer["open_invoice_amount"], 2),
+        "days_overdue": customer["days_overdue"],
+        "plan": customer["plan"],
+        "status": "To Do"
+    }
+
+    tasks.append(new_task)
+    save_tasks(tasks)
+
+
+    return {
+        "error": False,
+        "message": "Tarefa de cobrança criada com sucesso.",
+        "task": new_task
+    }
+
+@mcp.tool()
+def listar_tarefas_cobranca() -> list[dict]:
+    """
+    Lista todas as tarefas fictícias de cobrança criadas.
+    Use quando o usuário quiser revisar as ações de cobrança pendentes.
+    """
+    return load_tasks()
 
 if __name__ == "__main__":
     mcp.run()
