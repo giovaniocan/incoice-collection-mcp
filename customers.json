@@ -1,0 +1,52 @@
+[
+  {
+    "id": "CUS-001",
+    "name": "Alpha Foods",
+    "plan": "Starter",
+    "mrr": 49.9,
+    "invoice_status": "paid",
+    "days_overdue": 0,
+    "open_invoice_amount": 0,
+    "contact_email": "finance@alphafoods.com"
+  },
+  {
+    "id": "CUS-002",
+    "name": "Beta Logistics",
+    "plan": "Business",
+    "mrr": 299.9,
+    "invoice_status": "overdue",
+    "days_overdue": 18,
+    "open_invoice_amount": 299.9,
+    "contact_email": "billing@betalogistics.com"
+  },
+  {
+    "id": "CUS-003",
+    "name": "Gamma Health",
+    "plan": "Pro",
+    "mrr": 149.9,
+    "invoice_status": "overdue",
+    "days_overdue": 7,
+    "open_invoice_amount": 149.9,
+    "contact_email": "admin@gammahealth.com"
+  },
+  {
+    "id": "CUS-004",
+    "name": "Delta Retail",
+    "plan": "Business",
+    "mrr": 299.9,
+    "invoice_status": "overdue",
+    "days_overdue": 32,
+    "open_invoice_amount": 599.8,
+    "contact_email": "finance@deltaretail.com"
+  },
+  {
+    "id": "CUS-005",
+    "name": "Omega SaaS",
+    "plan": "Enterprise",
+    "mrr": 999.9,
+    "invoice_status": "paid",
+    "days_overdue": 0,
+    "open_invoice_amount": 0,
+    "contact_email": "finance@omegasaas.com"
+  }
+]
